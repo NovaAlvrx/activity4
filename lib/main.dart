@@ -1,3 +1,4 @@
+import 'dart:math' as Math;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,7 +29,7 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-  final List<String> _tabs = ["Smiley", "Party", "Tab 3", "Tab 4"];
+  final List<String> _tabs = ["Smiley", "Party", "Heart", "Custom Emoji"];
 
   @override
   void initState() {
@@ -70,35 +71,29 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Tab 1 (smiley face)
+          // tab 1 (smiley face)
           CustomPaint(
             painter: SmileyPainter(),
             child: Container(),
           ),
-          // Tab 2 (party face)
+          // other tabs
+          Center(child: Text("Tab 2", style: TextStyle(fontSize: 24))),
           CustomPaint(
-            painter: PartyPainter(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(),
-                Image.network(
-                  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3B6bDl3aHZhdXI1eGN6cHhkODR3bno1cXRraGEzZ3dja241MzlzdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/PotiYSwEnO33KX007a/giphy.gif',
-                  width: 700,
-                  height: 700,
-                ),
-              ],
-            ),
+            painter: HeartPainter(),
+            child: Container(),
           ),
-          Center(child: Text("Tab 3", style: TextStyle(fontSize: 24))),
-          Center(child: Text("Tab 4", style: TextStyle(fontSize: 24))),
+          CustomPaint(
+            painter: CustomEmojiPainter(),
+            child: Container(),
+          ),
         ],
       ),
     );
   }
 }
 
-// Smiley face painter
+//-------Tab 1: Smiley Face-------//
+// CustomPainter for a simple smiley face
 class SmileyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -132,6 +127,7 @@ class SmileyPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
+//-------Tab 2: Placeholder-------//
 // Party face painter
 class PartyPainter extends CustomPainter {
   @override
@@ -215,6 +211,87 @@ class PartyPainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, hatFillPaint);
 
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+//-------Tab 3: Heart Shape-------//
+// CustomPainter for a simple heart shape
+class HeartPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
+    final centerY = size.height / 2;
+
+    final paint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
+
+    // Size and position of the ovals
+    final ovalWidth = 78.0;
+    final ovalHeight = 80.0;
+
+    // Left oval
+    final leftOval = Rect.fromCenter(
+      center: Offset(centerX - 25, centerY - 20),
+      width: ovalWidth,
+      height: ovalHeight,
+    );
+
+    // Right oval
+    final rightOval = Rect.fromCenter(
+      center: Offset(centerX + 25, centerY - 20),
+      width: ovalWidth,
+      height: ovalHeight,
+    );
+
+    // Draw the ovals
+    canvas.drawOval(leftOval, paint);
+    canvas.drawOval(rightOval, paint);
+
+    // Draw the bottom triangle
+    final trianglePath = Path()
+      ..moveTo(centerX - 60, centerY) // left point
+      ..lineTo(centerX + 60, centerY) // right point
+      ..lineTo(centerX, centerY + 100) // bottom point
+      ..close();
+
+    canvas.drawPath(trianglePath, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+//-------Tab 4: Custom Emoji-------//
+// CustomPainter for a custom emoji (star)
+class CustomEmojiPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.orange
+      ..style = PaintingStyle.fill;
+
+    final center = Offset(size.width / 2, size.height / 2); // Center of the emoji
+    final radius = 70.0; // Radius of the star
+    final path = Path(); // Initialize path
+    const int points = 5; // Number of star points
+
+    for (int i = 0; i < points * 2; i++) { // Loop alternating between outer and inner points
+      double angle = (i * 3.14159) / points; // Calculate angle for each point where half circle is pi 
+      double r = (i % 2 == 0) ? radius : radius / 2; // Alternate between outer and inner radius
+      double x = center.dx + r * Math.cos(angle - 3.14159 / 2); 
+      double y = center.dy + r * Math.sin(angle - 3.14159 / 2);
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, paint);
   }
 
   @override
