@@ -1,3 +1,4 @@
+import 'dart:math' as Math;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,7 +29,7 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-  final List<String> _tabs = ["Smiley", "Tab 2", "Heart", "Tab 4"];
+  final List<String> _tabs = ["Smiley", "Tab 2", "Heart", "Custom Emoji"];
 
   @override
   void initState() {
@@ -81,13 +82,17 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
             painter: HeartPainter(),
             child: Container(),
           ),
-          Center(child: Text("Tab 4", style: TextStyle(fontSize: 24))),
+          CustomPaint(
+            painter: CustomEmojiPainter(),
+            child: Container(),
+          ),
         ],
       ),
     );
   }
 }
 
+//-------Tab 1: Smiley Face-------//
 // CustomPainter for a simple smiley face
 class SmileyPainter extends CustomPainter {
   @override
@@ -122,7 +127,7 @@ class SmileyPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-
+//-------Tab 3: Heart Shape-------//
 // CustomPainter for a simple heart shape
 class HeartPainter extends CustomPainter {
   @override
@@ -164,6 +169,39 @@ class HeartPainter extends CustomPainter {
       ..close();
 
     canvas.drawPath(trianglePath, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+//-------Tab 4: Custom Emoji-------//
+// CustomPainter for a custom emoji (star)
+class CustomEmojiPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.orange
+      ..style = PaintingStyle.fill;
+
+    final center = Offset(size.width / 2, size.height / 2); // Center of the emoji
+    final radius = 70.0; // Radius of the star
+    final path = Path(); // Initialize path
+    const int points = 5; // Number of star points
+
+    for (int i = 0; i < points * 2; i++) { // Loop alternating between outer and inner points
+      double angle = (i * 3.14159) / points; // Calculate angle for each point where half circle is pi 
+      double r = (i % 2 == 0) ? radius : radius / 2; // Alternate between outer and inner radius
+      double x = center.dx + r * Math.cos(angle - 3.14159 / 2); 
+      double y = center.dy + r * Math.sin(angle - 3.14159 / 2);
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, paint);
   }
 
   @override
