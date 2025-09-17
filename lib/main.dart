@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dropdown Tab Navigation',
+      title: 'Emoji Tabs',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const TabDropdownExample(),
     );
@@ -28,7 +28,7 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-  final List<String> _tabs = ["Tab 1", "Tab 2", "Tab 3", "Tab 4"];
+  final List<String> _tabs = ["Smiley", "Tab 2", "Heart", "Tab 4"];
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
       appBar: AppBar(
         title: DropdownButton<int>(
           value: _selectedIndex,
-          underline: const SizedBox(), // removes default underline
+          underline: const SizedBox(),
           items: List.generate(
             _tabs.length,
             (index) => DropdownMenuItem(
@@ -70,21 +70,102 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildTabContent("This is Tab 1"),
-          _buildTabContent("This is Tab 2"),
-          _buildTabContent("This is Tab 3"),
-          _buildTabContent("This is Tab 4"),
+          // tab 1 (smiley face)
+          CustomPaint(
+            painter: SmileyPainter(),
+            child: Container(),
+          ),
+          // other tabs
+          Center(child: Text("Tab 2", style: TextStyle(fontSize: 24))),
+          CustomPaint(
+            painter: HeartPainter(),
+            child: Container(),
+          ),
+          Center(child: Text("Tab 4", style: TextStyle(fontSize: 24))),
         ],
       ),
     );
   }
+}
 
-  Widget _buildTabContent(String text) {
-    return Center(
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 24),
-      ),
-    );
+// CustomPainter for a simple smiley face
+class SmileyPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
+    final centerY = size.height / 2;
+    final faceRadius = 100.0;
+
+    // Face circle
+    final facePaint = Paint()
+      ..color = Colors.yellow
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(centerX, centerY), faceRadius, facePaint);
+
+    // Eyes
+    final eyePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(centerX - 40, centerY - 30), 10, eyePaint);
+    canvas.drawCircle(Offset(centerX + 40, centerY - 30), 10, eyePaint);
+
+    // Smile (arc)
+    final smilePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5;
+    final smileRect = Rect.fromCircle(center: Offset(centerX, centerY), radius: 60);
+    canvas.drawArc(smileRect, 0.1 * 3.14, 0.8 * 3.14, false, smilePaint);
   }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+
+// CustomPainter for a simple heart shape
+class HeartPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
+    final centerY = size.height / 2;
+
+    final paint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
+
+    // Size and position of the ovals
+    final ovalWidth = 78.0;
+    final ovalHeight = 80.0;
+
+    // Left oval
+    final leftOval = Rect.fromCenter(
+      center: Offset(centerX - 25, centerY - 20),
+      width: ovalWidth,
+      height: ovalHeight,
+    );
+
+    // Right oval
+    final rightOval = Rect.fromCenter(
+      center: Offset(centerX + 25, centerY - 20),
+      width: ovalWidth,
+      height: ovalHeight,
+    );
+
+    // Draw the ovals
+    canvas.drawOval(leftOval, paint);
+    canvas.drawOval(rightOval, paint);
+
+    // Draw the bottom triangle
+    final trianglePath = Path()
+      ..moveTo(centerX - 60, centerY) // left point
+      ..lineTo(centerX + 60, centerY) // right point
+      ..lineTo(centerX, centerY + 100) // bottom point
+      ..close();
+
+    canvas.drawPath(trianglePath, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
