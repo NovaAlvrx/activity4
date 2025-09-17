@@ -28,7 +28,7 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-  final List<String> _tabs = ["Smiley", "Tab 2", "Tab 3", "Tab 4"];
+  final List<String> _tabs = ["Smiley", "Party", "Tab 3", "Tab 4"];
 
   @override
   void initState() {
