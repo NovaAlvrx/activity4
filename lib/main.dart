@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contebxt) {
     return MaterialApp(
       title: 'Emoji Tabs',
       theme: ThemeData(primarySwatch: Colors.blue),
@@ -91,7 +91,7 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
               height: 500,
               ),
             ],
-            ),
+          ),
           // tab 3 (heart)
           CustomPaint(
             painter: HeartPainter(),
