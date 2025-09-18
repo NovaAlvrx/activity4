@@ -76,12 +76,28 @@ class _TabDropdownExampleState extends State<TabDropdownExample>
             painter: SmileyPainter(),
             child: Container(),
           ),
-          // other tabs
-          Center(child: Text("Tab 2", style: TextStyle(fontSize: 24))),
+          // tab 2 (party face)
+            Stack(
+            alignment: Alignment.center,
+            children: [
+              CustomPaint(
+              painter: PartyPainter(),
+              child: Container(),
+              ),
+
+              Image.network(
+              'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3B6bDl3aHZhdXI1eGN6cHhkODR3bno1cXRraGEzZ3dja241MzlzdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/PotiYSwEnO33KX007a/giphy.gif',
+              width: 500,
+              height: 500,
+              ),
+            ],
+            ),
+          // tab 3 (heart)
           CustomPaint(
             painter: HeartPainter(),
             child: Container(),
           ),
+          // tab 4 (star)
           CustomPaint(
             painter: CustomEmojiPainter(),
             child: Container(),
